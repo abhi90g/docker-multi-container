@@ -1,0 +1,21 @@
+language: generic
+sudo: required
+
+before_install:
+  - docker build -t abhi90g/docker-multi-container -f ./client/Dockerfile.dev ./client
+
+script:
+  - docker run -e CI=true abhi90g/docker-multi-container npm run test
+
+after_success:
+  - docker build -t abhi90g/docker-multi-client ./client
+  - docker build -t abhi90g/docker-multi-nginx ./nginx
+  - docker build -t abhi90g/docker-multi-server ./server
+  - docker build -t abhi90g/docker-multi-worker ./worker
+  # log in to docker CLI
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+  # take those images and push to docker hub
+  - docker push abhi90g/docker-multi-client
+  - docker push abhi90g/docker-multi-nginx
+  - docker push abhi90g/docker-multi-server
+  - docker push abhi90g/docker-multi-worker
