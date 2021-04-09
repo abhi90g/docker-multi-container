@@ -21,3 +21,15 @@ after_success:
   - docker push abhi90g/docker-multi-nginx
   - docker push abhi90g/docker-multi-server
   - docker push abhi90g/docker-multi-worker
+
+deploy:
+  provider: elasticbeanstalk
+  region: us-east-1
+  app: docker-multi-container
+  env: Dockermulticontainer-env
+  bucket_name: elasticbeanstalk-us-east-1-754789248719
+  bucket_path: docker-multi-container
+  on:
+    branch: master
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key: $AWS_SECRET_KEY
